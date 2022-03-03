@@ -14,5 +14,11 @@
     <string name="nine">9</string>
     <string name="plus">+</string>
     <string name="minus">-</string>
-    <string name="multiply">&#x00D7;</string>
+    <string name="multiplication">&#x00D7;</string>
+    <string name="division">&#x00F7;</string>
+    <string name="modulus">%</string>
+    <string name="equals">=</string>
+    <string name="plus_minus">&#x00B1;</string>
+    <string name="clear">C</string>
+    <string name="decimal">.</string>
 </resources>
