@@ -52,7 +52,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/clear"
-            android:onClick="onClick" />
+            android:onClick="onOperatorClick" />
 
         <Button
             android:id="@+id/plus_minus_button"
@@ -60,7 +60,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/plus_minus"
-            android:onClick="onClick" />
+            android:onClick="onOperatorClick" />
 
         <Button
             android:id="@+id/modulus_button"
@@ -68,7 +68,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/modulus"
-            android:onClick="onClick" />
+            android:onClick="onOperatorClick" />
 
         <Button
             android:id="@+id/divide_button"
@@ -76,7 +76,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/division"
-            android:onClick="onClick" />
+            android:onClick="onOperatorClick" />
     </LinearLayout>
 
     <LinearLayout
@@ -91,7 +91,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/seven"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/eight_button"
@@ -99,7 +99,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/eight"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/nine_button"
@@ -107,7 +107,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/nine"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/multiply_button"
@@ -115,7 +115,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/multiplication"
-            android:onClick="onClick" />
+            android:onClick="onOperatorClick" />
     </LinearLayout>
 
     <LinearLayout
@@ -130,7 +130,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/four"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/five_button"
@@ -138,7 +138,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/five"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/six_button"
@@ -146,7 +146,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/six"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/minus_button"
@@ -154,7 +154,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/minus"
-            android:onClick="onClick" />
+            android:onClick="onOperatorClick" />
     </LinearLayout>
 
     <LinearLayout
@@ -169,7 +169,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/one"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/two_button"
@@ -177,7 +177,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/two"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/three_button"
@@ -185,7 +185,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/three"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/plus_button"
@@ -193,7 +193,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/plus"
-            android:onClick="onClick" />
+            android:onClick="onOperatorClick" />
     </LinearLayout>
 
     <LinearLayout
@@ -208,7 +208,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:text="@string/zero"
-            android:onClick="onClick" />
+            android:onClick="onNumberClick" />
 
         <Button
             android:id="@+id/decimal_button"
@@ -216,7 +216,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/decimal"
-            android:onClick="onClick" />
+            android:onClick="onOperatorClick" />
 
         <Button
             android:id="@+id/equals_button"
@@ -224,6 +224,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/equals"
-            android:onClick="onClick" />
+            android:onClick="onOperatorClick" />
     </LinearLayout>
 </LinearLayout>

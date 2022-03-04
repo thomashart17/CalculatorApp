@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
  * MainActivity class for the calculator app.
  * @author Thomas Hart
  */
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements OnCalculatorClickListener {
 
     // TextViews
     TextView calculatorText;
@@ -40,11 +39,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     /**
-     * onClick: Determines correct action to be taken based off of button press.
+     * onNumberClick: Handles input from number buttons.
      * @param view
      */
     @Override
-    public void onClick(View view) {
+    public void onNumberClick(View view) {
         view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
         switch (view.getId()) {
             case R.id.zero_button:
@@ -77,6 +76,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.nine_button:
                 updateText("9");
                 break;
+        }
+    }
+
+    /**
+     * onOperatorClick: Handles input for operator buttons.
+     * @param view
+     */
+    @Override
+    public void onOperatorClick(View view) {
+        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+        switch (view.getId()) {
             case R.id.clear_button:
                 clear();
                 break;
