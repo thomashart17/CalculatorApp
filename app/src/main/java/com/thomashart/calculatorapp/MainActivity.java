@@ -2,6 +2,7 @@ package com.thomashart.calculatorapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,6 +28,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
     // Operator Buttons
     Button clearButton;
     Button equalsButton;
+    Button plusButton;
+    Button minusButton;
+    Button multiplyButton;
+    Button divideButton;
+    Button plusMinusButton;
+    Button modulusButton;
+    Button decimalButton;
 
     // TextViews
     TextView calculatorText;
@@ -66,6 +74,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         clearButton = findViewById(R.id.clear_button);
         equalsButton = findViewById(R.id.equals_button);
+        plusButton = findViewById(R.id.plus_button);
+        minusButton = findViewById(R.id.minus_button);
+        multiplyButton = findViewById(R.id.multiply_button);
+        divideButton = findViewById(R.id.divide_button);
+        plusMinusButton = findViewById(R.id.plus_minus_button);
+        modulusButton = findViewById(R.id.modulus_button);
+        decimalButton = findViewById(R.id.decimal_button);
 
         zeroButton.setOnClickListener(this);
         oneButton.setOnClickListener(this);
@@ -80,6 +95,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         clearButton.setOnClickListener(this);
         equalsButton.setOnClickListener(this);
+        plusButton.setOnClickListener(this);
+        minusButton.setOnClickListener(this);
+        multiplyButton.setOnClickListener(this);
+        divideButton.setOnClickListener(this);
+        plusMinusButton.setOnClickListener(this);
+        modulusButton.setOnClickListener(this);
+        decimalButton.setOnClickListener(this);
     }
 
     /**
@@ -88,6 +110,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
      */
     @Override
     public void onClick(View view) {
+        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
         switch (view.getId()) {
             case R.id.zero_button:
                 updateText("0");

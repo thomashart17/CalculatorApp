@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:hapticFeedbackEnabled="true"
     tools:context=".MainActivity">
 
     <FrameLayout
@@ -67,7 +68,7 @@
             android:text="@string/modulus" />
 
         <Button
-            android:id="@+id/division_button"
+            android:id="@+id/divide_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -102,7 +103,7 @@
             android:text="@string/nine" />
 
         <Button
-            android:id="@+id/multiplication_button"
+            android:id="@+id/multiply_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
