@@ -10,14 +10,33 @@
     tools:context=".MainActivity">
 
     <FrameLayout
-        android:id="@+id/text_frame"
+        android:id="@+id/input_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4">
+        android:layout_weight="3">
         <TextView
-            android:id="@+id/text_view"
+            android:id="@+id/calculator_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:gravity="top|end"
+            android:textAlignment="gravity"
+            android:textSize="25pt" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/answer_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/answer_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:gravity="bottom|end"
+            android:textAlignment="gravity"
+            android:textSize="25pt" />
     </FrameLayout>
 
     <LinearLayout
