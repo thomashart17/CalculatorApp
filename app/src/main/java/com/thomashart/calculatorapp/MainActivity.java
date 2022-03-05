@@ -11,8 +11,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.security.auth.login.LoginException;
-
 /**
  * MainActivity class for the calculator app.
  * @author Thomas Hart
