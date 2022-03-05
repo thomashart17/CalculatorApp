@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.security.auth.login.LoginException;
 
 /**
  * MainActivity class for the calculator app.
@@ -20,7 +23,12 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
     TextView calculatorText;
     TextView answerText;
 
-    ArrayList<BigDecimal> inputNums;
+    // ArrayLists of numbers and operators
+    ArrayList<BigDecimal> inputNumbers;
+    ArrayList<Operator> inputOperators;
+
+    // HashMap to convert from String to corresponding Operator
+    HashMap<String, Operator> operatorHashMap = new HashMap<>();
 
     /**
      * onCreate: Initializes default application state when activity is created.
@@ -31,12 +39,24 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Setting up TextViews for calculator
+        // Setting up TextViews for calculator display
         calculatorText = (TextView) findViewById(R.id.calculator_text);
         calculatorText.setText("0");
         answerText = (TextView) findViewById(R.id.answer_text);
 
-        inputNums = new ArrayList<>();
+        // Setting up ArrayLists to store input
+        inputNumbers = new ArrayList<>();
+        inputOperators = new ArrayList<>();
+
+        initOperatorHashMap();
+    }
+
+    private void initOperatorHashMap() {
+        operatorHashMap.put(getString(R.string.plus), Operator.PLUS);
+        operatorHashMap.put(getString(R.string.minus), Operator.MINUS);
+        operatorHashMap.put(getString(R.string.multiply), Operator.MULTIPLY);
+        operatorHashMap.put(getString(R.string.divide), Operator.DIVIDE);
+        operatorHashMap.put(getString(R.string.modulus), Operator.MODULUS);
     }
 
     /**
@@ -62,7 +82,17 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 clear();
                 break;
             case R.id.equals_button:
+                addLastNumber();
                 calculate();
+                break;
+            case R.id.plus_minus_button:
+            case R.id.decimal_button:
+                break;
+            default:
+                TextView operatorText = findViewById(view.getId());
+                inputOperators.add(operatorHashMap.get(operatorText.getText().toString()));
+                addLastNumber();
+                updateText(operatorText.getText().toString());
                 break;
         }
     }
@@ -74,6 +104,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
     private void updateText(String update) {
         if (answerText.length() > 0) {
             clear();
+            calculatorText.setText(update);
         }
         if (calculatorText.getText().equals("0")) {
             calculatorText.setText(update);
@@ -87,7 +118,27 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
      *            Displays result of calculations to screen.
      */
     private void calculate() {
-        answerText.setText(calculatorText.getText());
+        BigDecimal answer;
+        switch (inputOperators.get(0)) {
+            case PLUS:
+                answer = inputNumbers.get(0).add(inputNumbers.get(1));
+                break;
+            case MINUS:
+                answer = inputNumbers.get(0).subtract(inputNumbers.get(1));
+                break;
+            case MULTIPLY:
+                answer = inputNumbers.get(0).multiply(inputNumbers.get(1));
+                break;
+            case DIVIDE:
+                answer = inputNumbers.get(0).divide(inputNumbers.get(1));
+                break;
+            case MODULUS:
+                answer = inputNumbers.get(0).remainder(inputNumbers.get(1));
+                break;
+            default:
+                throw new RuntimeException();
+        }
+        answerText.setText(String.valueOf(answer));
     }
 
     /**
@@ -96,5 +147,15 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
     private void clear() {
         calculatorText.setText("0");
         answerText.setText("");
+
+        inputNumbers.clear();
+        inputOperators.clear();
+    }
+
+    /**
+     * addLastNumber: Takes the last number from the input TextView and adds it to inputNumbers
+     */
+    private void addLastNumber() {
+        inputNumbers.add(new BigDecimal(calculatorText.getText().subSequence(calculatorText.length()-1, calculatorText.length()).toString()));
     }
 }

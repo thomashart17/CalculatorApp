@@ -75,7 +75,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/division"
+            android:text="@string/divide"
             android:onClick="onOperatorClick" />
     </LinearLayout>
 
@@ -114,7 +114,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/multiplication"
+            android:text="@string/multiply"
             android:onClick="onOperatorClick" />
     </LinearLayout>
 
