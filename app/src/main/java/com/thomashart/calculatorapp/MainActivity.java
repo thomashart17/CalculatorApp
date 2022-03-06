@@ -30,7 +30,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
 
     /**
      * onCreate: Initializes default application state when activity is created.
-     * @param savedInstanceState
+     * @param savedInstanceState Saved application state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +49,9 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         initOperatorHashMap();
     }
 
+    /**
+     * initOperatorHashMap: Initializes operator text ids to corresponding enum values
+     */
     private void initOperatorHashMap() {
         operatorHashMap.put(getString(R.string.plus), Operator.PLUS);
         operatorHashMap.put(getString(R.string.minus), Operator.MINUS);
@@ -59,18 +62,18 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
 
     /**
      * onNumberClick: Handles input from number buttons.
-     * @param view
+     * @param view View that was clicked
      */
     @Override
     public void onNumberClick(View view) {
         view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-        Button pressedButton = findViewById(view.getId());
+        Button pressedButton = (Button) findViewById(view.getId());
         updateText(pressedButton.getText().toString());
     }
 
     /**
      * onOperatorClick: Handles input for operator buttons.
-     * @param view
+     * @param view View that was clicked
      */
     @Override
     public void onOperatorClick(View view) {
@@ -87,12 +90,26 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
             case R.id.decimal_button:
                 break;
             default:
-                TextView operatorText = findViewById(view.getId());
-                inputOperators.add(operatorHashMap.get(operatorText.getText().toString()));
-                addLastNumber();
-                updateText(operatorText.getText().toString());
+                TextView operatorText = (TextView) findViewById(view.getId());
+                if (isDigit(calculatorText.getText().charAt(calculatorText.length()-1))) {
+                    inputOperators.add(operatorHashMap.get(operatorText.getText().toString()));
+                    addLastNumber();
+                    updateText(operatorText.getText().toString());
+                } else {
+                    inputOperators.set(inputOperators.size()-1, operatorHashMap.get(operatorText.getText().toString()));
+                    replaceLastChar(operatorText.getText().toString());
+                }
                 break;
         }
+    }
+
+    /**
+     * isNumber: Checks if given character is a digit
+     * @param c Character to be checked
+     * @return true if c is a digit, false if it isn't
+     */
+    private boolean isDigit(char c) {
+        return c >= 48 && c <= 57;
     }
 
     /**
@@ -101,14 +118,28 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
      */
     private void updateText(String update) {
         if (answerText.length() > 0) {
+            String answer = answerText.getText().toString();
             clear();
-            calculatorText.setText(update);
-        }
-        if (calculatorText.getText().equals("0")) {
-            calculatorText.setText(update);
+            if (isDigit(update.charAt(0))) {
+                calculatorText.setText(update);
+            } else {
+                calculatorText.setText(answer + update);
+                inputNumbers.add(new BigDecimal(answer));
+                inputOperators.add(operatorHashMap.get(update));
+            }
+        } else if (calculatorText.getText().equals("0")) {
+            if (update.charAt(0) >= 49 && update.charAt(0) <= 57) {
+                calculatorText.setText(update);
+            } else if (update.charAt(0) != 48) {
+                calculatorText.setText(calculatorText.getText() + update);
+            }
         } else {
             calculatorText.setText(calculatorText.getText() + update);
         }
+    }
+
+    private void replaceLastChar(String update) {
+        calculatorText.setText(calculatorText.getText().subSequence(0, calculatorText.length()-1) + update);
     }
 
     /**
