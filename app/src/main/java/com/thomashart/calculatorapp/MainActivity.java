@@ -158,25 +158,27 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
      *            Displays result of calculations to screen.
      */
     private void calculate() {
-        BigDecimal answer;
-        switch (inputOperators.get(0)) {
-            case PLUS:
-                answer = inputNumbers.get(0).add(inputNumbers.get(1));
-                break;
-            case MINUS:
-                answer = inputNumbers.get(0).subtract(inputNumbers.get(1));
-                break;
-            case MULTIPLY:
-                answer = inputNumbers.get(0).multiply(inputNumbers.get(1));
-                break;
-            case DIVIDE:
-                answer = inputNumbers.get(0).divide(inputNumbers.get(1));
-                break;
-            case MODULUS:
-                answer = inputNumbers.get(0).remainder(inputNumbers.get(1));
-                break;
-            default:
-                throw new RuntimeException();
+        BigDecimal answer = inputNumbers.get(0);
+        for (int i = 0; i < inputOperators.size(); i++) {
+            switch (inputOperators.get(i)) {
+                case PLUS:
+                    answer = answer.add(inputNumbers.get(i + 1));
+                    break;
+                case MINUS:
+                    answer = answer.subtract(inputNumbers.get(i + 1));
+                    break;
+                case MULTIPLY:
+                    answer = answer.multiply(inputNumbers.get(i + 1));
+                    break;
+                case DIVIDE:
+                    answer = answer.divide(inputNumbers.get(i + 1));
+                    break;
+                case MODULUS:
+                    answer = answer.remainder(inputNumbers.get(i+ 1));
+                    break;
+                default:
+                    throw new RuntimeException();
+            }
         }
         answerText.setText(String.valueOf(answer));
     }
