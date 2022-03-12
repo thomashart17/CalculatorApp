@@ -1,11 +1,13 @@
 package com.thomashart.calculatorapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
 
     // HashMap to convert from String to corresponding Operator
     HashMap<String, Operator> operatorHashMap = new HashMap<>();
+
+    private int currentNumberIndex = 0;
 
     /**
      * onCreate: Initializes default application state when activity is created.
@@ -83,8 +87,12 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 clear();
                 break;
             case R.id.equals_button:
-                addLastNumber();
-                calculate();
+                if (currentNumberIndex != calculatorText.getText().length()) {
+                    addLastNumber();
+                    calculate();
+                } else {
+                    invalidSyntax();
+                }
                 break;
             case R.id.plus_minus_button:
             case R.id.decimal_button:
@@ -93,7 +101,9 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 TextView operatorText = (TextView) findViewById(view.getId());
                 if (isDigit(calculatorText.getText().charAt(calculatorText.length()-1))) {
                     inputOperators.add(operatorHashMap.get(operatorText.getText().toString()));
-                    addLastNumber();
+                    if (answerText.length() == 0) {
+                        addLastNumber();
+                    }
                     updateText(operatorText.getText().toString());
                 } else {
                     inputOperators.set(inputOperators.size()-1, operatorHashMap.get(operatorText.getText().toString()));
@@ -126,6 +136,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 calculatorText.setText(answer + update);
                 inputNumbers.add(new BigDecimal(answer));
                 inputOperators.add(operatorHashMap.get(update));
+                currentNumberIndex = calculatorText.length();
             }
         } else if (calculatorText.getText().equals("0")) {
             if (update.charAt(0) >= 49 && update.charAt(0) <= 57) {
@@ -179,12 +190,26 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
 
         inputNumbers.clear();
         inputOperators.clear();
+
+        currentNumberIndex = 0;
     }
 
     /**
      * addLastNumber: Takes the last number from the input TextView and adds it to inputNumbers
      */
     private void addLastNumber() {
-        inputNumbers.add(new BigDecimal(calculatorText.getText().subSequence(calculatorText.length()-1, calculatorText.length()).toString()));
+        inputNumbers.add(new BigDecimal(calculatorText.getText().subSequence(currentNumberIndex, calculatorText.length()).toString()));
+        currentNumberIndex = calculatorText.length() + 1;
+    }
+
+    /**
+     * invalidSyntax: Displays toast message if the operation is invalid.
+     */
+    private void invalidSyntax() {
+        Context context = getApplicationContext();
+        CharSequence message = "Invalid Syntax";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, message, duration);
+        toast.show();
     }
 }
