@@ -95,7 +95,9 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 }
                 break;
             case R.id.plus_minus_button:
+                break;
             case R.id.decimal_button:
+                updateText(".");
                 break;
             default:
                 TextView operatorText = (TextView) findViewById(view.getId());
@@ -158,7 +160,8 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
      *            Displays result of calculations to screen.
      */
     private void calculate() {
-        BigDecimal answer = inputNumbers.get(0);
+        BigDecimal answer;
+        answer = inputNumbers.get(0);
         for (int i = 0; i < inputOperators.size(); i++) {
             switch (inputOperators.get(i)) {
                 case PLUS:
