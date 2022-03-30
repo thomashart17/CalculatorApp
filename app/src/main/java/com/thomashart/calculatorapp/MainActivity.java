@@ -88,11 +88,16 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 clear();
                 break;
             case R.id.equals_button:
-                if (currentNumberIndex != calculatorText.getText().length()) {
-                    addLastNumber();
-                    calculate();
+                if (answerText.length() == 0) {
+                    if (currentNumberIndex != calculatorText.getText().length()) {
+                        addLastNumber();
+                        calculate();
+                    } else {
+                        invalidSyntax();
+                    }
                 } else {
-                    invalidSyntax();
+                    updateText("");
+                    calculate();
                 }
                 break;
             case R.id.plus_minus_button:
@@ -147,7 +152,10 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         if (answerText.length() > 0) {
             String answer = answerText.getText().toString();
             clear();
-            if (isDigit(update.charAt(0))) {
+            if (update.length() == 0) {
+                calculatorText.setText(answer);
+                inputNumbers.add(new BigDecimal(answer));
+            } else if (isDigit(update.charAt(0))) {
                 calculatorText.setText(update);
             } else {
                 calculatorText.setText(answer + update);
