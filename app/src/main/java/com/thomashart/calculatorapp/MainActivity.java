@@ -99,7 +99,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 break;
             case R.id.decimal_button:
                 if (!decimalStatus) {
-                    if (isDigit(calculatorText.getText().charAt(calculatorText.length() - 1))) {
+                    if (isDigit(calculatorText.getText().charAt(calculatorText.length() - 1)) && answerText.length() == 0) {
                         updateText(".");
                     } else {
                         updateText("0.");
@@ -115,6 +115,12 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                         addLastNumber();
                     }
                     updateText(operatorText.getText().toString());
+                } else if (calculatorText.getText().charAt(calculatorText.length()-1) == 46) {
+                    inputOperators.add(operatorHashMap.get(operatorText.getText().toString()));
+                    if (answerText.length() == 0) {
+                        addLastNumber();
+                    }
+                    replaceLastChar(operatorText.getText().toString());
                 } else {
                     inputOperators.set(inputOperators.size()-1, operatorHashMap.get(operatorText.getText().toString()));
                     replaceLastChar(operatorText.getText().toString());
@@ -160,6 +166,10 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         }
     }
 
+    /**
+     * replaceLastChar: Replaces the last character in the calculator TextView.
+     * @param update the character to use as a replacement.
+     */
     private void replaceLastChar(String update) {
         calculatorText.setText(calculatorText.getText().subSequence(0, calculatorText.length()-1) + update);
     }
@@ -193,6 +203,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
             }
         }
         answerText.setText(String.valueOf(answer));
+        decimalStatus = false;
     }
 
     /**
@@ -214,7 +225,11 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
      */
     private void addLastNumber() {
         inputNumbers.add(new BigDecimal(calculatorText.getText().subSequence(currentNumberIndex, calculatorText.length()).toString()));
-        currentNumberIndex = calculatorText.length() + 1;
+        if (calculatorText.getText().charAt(calculatorText.length()-1) == 46) {
+            currentNumberIndex = calculatorText.length();
+        } else {
+            currentNumberIndex = calculatorText.length() + 1;
+        }
     }
 
     /**
