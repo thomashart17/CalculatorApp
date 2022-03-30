@@ -43,9 +43,9 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         setContentView(R.layout.activity_main);
 
         // Setting up TextViews for calculator display
-        calculatorText = (TextView) findViewById(R.id.calculator_text);
+        calculatorText = findViewById(R.id.calculator_text);
         calculatorText.setText("0");
-        answerText = (TextView) findViewById(R.id.answer_text);
+        answerText = findViewById(R.id.answer_text);
 
         // Setting up ArrayLists to store input
         inputNumbers = new ArrayList<>();
@@ -72,7 +72,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
     @Override
     public void onNumberClick(View view) {
         view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-        Button pressedButton = (Button) findViewById(view.getId());
+        Button pressedButton = findViewById(view.getId());
         updateText(pressedButton.getText().toString());
     }
 
@@ -113,7 +113,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 }
                 break;
             default:
-                TextView operatorText = (TextView) findViewById(view.getId());
+                TextView operatorText = findViewById(view.getId());
                 if (isDigit(calculatorText.getText().charAt(calculatorText.length()-1))) {
                     inputOperators.add(operatorHashMap.get(operatorText.getText().toString()));
                     if (answerText.length() == 0) {
