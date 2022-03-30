@@ -31,6 +31,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
     HashMap<String, Operator> operatorHashMap = new HashMap<>();
 
     private int currentNumberIndex = 0;
+    private boolean decimalStatus = false;
 
     /**
      * onCreate: Initializes default application state when activity is created.
@@ -97,7 +98,14 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
             case R.id.plus_minus_button:
                 break;
             case R.id.decimal_button:
-                updateText(".");
+                if (!decimalStatus) {
+                    if (isDigit(calculatorText.getText().charAt(calculatorText.length() - 1))) {
+                        updateText(".");
+                    } else {
+                        updateText("0.");
+                    }
+                    decimalStatus = true;
+                }
                 break;
             default:
                 TextView operatorText = (TextView) findViewById(view.getId());
@@ -111,6 +119,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                     inputOperators.set(inputOperators.size()-1, operatorHashMap.get(operatorText.getText().toString()));
                     replaceLastChar(operatorText.getText().toString());
                 }
+                decimalStatus = false;
                 break;
         }
     }
@@ -197,6 +206,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         inputOperators.clear();
 
         currentNumberIndex = 0;
+        decimalStatus = false;
     }
 
     /**
