@@ -32,6 +32,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
 
     private int currentNumberIndex = 0;
     private boolean decimalStatus = false;
+    private Toast toast = null;
 
     /**
      * onCreate: Initializes default application state when activity is created.
@@ -52,10 +53,11 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         inputOperators = new ArrayList<>();
 
         initOperatorHashMap();
+        initToast();
     }
 
     /**
-     * initOperatorHashMap: Initializes operator text ids to corresponding enum values
+     * initOperatorHashMap: Initializes operator text ids to corresponding enum values.
      */
     private void initOperatorHashMap() {
         operatorHashMap.put(getString(R.string.plus), Operator.PLUS);
@@ -63,6 +65,16 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         operatorHashMap.put(getString(R.string.multiply), Operator.MULTIPLY);
         operatorHashMap.put(getString(R.string.divide), Operator.DIVIDE);
         operatorHashMap.put(getString(R.string.modulus), Operator.MODULUS);
+    }
+
+    /**
+     * initToast: Initializes toast that is displayed for invalid syntax.
+     */
+    private void initToast() {
+        Context context = getApplicationContext();
+        CharSequence message = "Invalid Syntax";
+        int duration = Toast.LENGTH_SHORT;
+        toast = Toast.makeText(context, message, duration);
     }
 
     /**
@@ -244,10 +256,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
      * invalidSyntax: Displays toast message if the operation is invalid.
      */
     private void invalidSyntax() {
-        Context context = getApplicationContext();
-        CharSequence message = "Invalid Syntax";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, message, duration);
+        toast.cancel();
         toast.show();
     }
 }
