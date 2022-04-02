@@ -24,14 +24,21 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
     TextView answerText;
 
     // ArrayLists of numbers and operators
-    ArrayList<BigDecimal> inputNumbers;
-    ArrayList<Operator> inputOperators;
+    ArrayList<BigDecimal> inputNumbers = new ArrayList<>();
+    ArrayList<Operator> inputOperators = new ArrayList<>();
 
     // HashMap to convert from String to corresponding Operator
     HashMap<String, Operator> operatorHashMap = new HashMap<>();
+    HashMap<Operator, String> reverseOperatorHashMap = new HashMap();
 
+    private BigDecimal answer = null;
+    private BigDecimal currentNumber = new BigDecimal(0);
     private int currentNumberIndex = 0;
+    private int decimalPoints = 0;
+    private boolean answered = false;
     private boolean decimalStatus = false;
+    private boolean negativeStatus = false;
+    private boolean numberStatus = true;
     private Toast toast = null;
 
     /**
@@ -45,26 +52,26 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
 
         // Setting up TextViews for calculator display
         calculatorText = findViewById(R.id.calculator_text);
-        calculatorText.setText("0");
+        calculatorText.setText(currentNumber.toString());
+        inputNumbers.add(currentNumber);
         answerText = findViewById(R.id.answer_text);
 
-        // Setting up ArrayLists to store input
-        inputNumbers = new ArrayList<>();
-        inputOperators = new ArrayList<>();
-
-        initOperatorHashMap();
+        initOperatorHashMaps();
         initToast();
     }
 
     /**
      * initOperatorHashMap: Initializes operator text ids to corresponding enum values.
      */
-    private void initOperatorHashMap() {
+    private void initOperatorHashMaps() {
         operatorHashMap.put(getString(R.string.plus), Operator.PLUS);
         operatorHashMap.put(getString(R.string.minus), Operator.MINUS);
         operatorHashMap.put(getString(R.string.multiply), Operator.MULTIPLY);
         operatorHashMap.put(getString(R.string.divide), Operator.DIVIDE);
         operatorHashMap.put(getString(R.string.modulus), Operator.MODULUS);
+        for (String s: operatorHashMap.keySet()) {
+            reverseOperatorHashMap.put(operatorHashMap.get(s), s);
+        }
     }
 
     /**
@@ -83,9 +90,31 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
      */
     @Override
     public void onNumberClick(View view) {
+        if (answered) {
+            clear();
+            answered = false;
+        }
         view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-        Button pressedButton = findViewById(view.getId());
-        updateText(pressedButton.getText().toString());
+        Button button = findViewById(view.getId());
+        BigDecimal update = new BigDecimal(button.getText().toString());
+        currentNumber = currentNumber.multiply(new BigDecimal(10));
+        currentNumber = currentNumber.add(update);
+        if (numberStatus) {
+            if (!negativeStatus) {
+                inputNumbers.set(currentNumberIndex, currentNumber.scaleByPowerOfTen(-decimalPoints));
+            } else {
+                inputNumbers.set(currentNumberIndex, currentNumber.scaleByPowerOfTen(-decimalPoints).negate());
+            }
+        } else {
+            numberStatus = true;
+            if (!negativeStatus) {
+                inputNumbers.add(currentNumberIndex, currentNumber.scaleByPowerOfTen(-decimalPoints));
+            } else {
+                inputNumbers.add(currentNumberIndex, currentNumber.scaleByPowerOfTen(-decimalPoints).negate());
+            }
+        }
+        if (decimalStatus) decimalPoints++;
+        updateText();
     }
 
     /**
@@ -98,100 +127,69 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         switch (view.getId()) {
             case R.id.clear_button:
                 clear();
+                updateText();
+                break;
+            case R.id.decimal_button:
+                if (answered) answered = false;
+                if (!decimalStatus) {
+                    decimalStatus = true;
+                    decimalPoints += 1;
+                }
                 break;
             case R.id.equals_button:
-                if (answerText.length() == 0) {
-                    if (currentNumberIndex != calculatorText.getText().length()) {
-                        addLastNumber();
-                        calculate();
-                    } else {
-                        invalidSyntax();
-                    }
-                } else {
-                    updateText("");
+                if (inputNumbers.size() > inputOperators.size()) {
                     calculate();
+                    BigDecimal tempAnswer = answer;
+                    updateText();
+                    clear();
+                    answer = tempAnswer;
+                    answered = true;
+                    inputNumbers.set(currentNumberIndex, answer);
+                } else {
+                    invalidSyntax();
                 }
                 break;
             case R.id.plus_minus_button:
-                break;
-            case R.id.decimal_button:
-                if (!decimalStatus) {
-                    if (isDigit(calculatorText.getText().charAt(calculatorText.length() - 1)) && answerText.length() == 0) {
-                        updateText(".");
-                    } else {
-                        updateText("0.");
-                    }
-                    decimalStatus = true;
-                }
+                if (answered) answered = false;
+                negativeStatus = !negativeStatus;
+                inputNumbers.set(currentNumberIndex, inputNumbers.get(currentNumberIndex).negate());
+                updateText();
                 break;
             default:
-                TextView operatorText = findViewById(view.getId());
-                if (isDigit(calculatorText.getText().charAt(calculatorText.length()-1))) {
-                    inputOperators.add(operatorHashMap.get(operatorText.getText().toString()));
-                    if (answerText.length() == 0) {
-                        addLastNumber();
-                    }
-                    updateText(operatorText.getText().toString());
-                } else if (calculatorText.getText().charAt(calculatorText.length()-1) == 46) {
-                    inputOperators.add(operatorHashMap.get(operatorText.getText().toString()));
-                    if (answerText.length() == 0) {
-                        addLastNumber();
-                    }
-                    replaceLastChar(operatorText.getText().toString());
+                if (answered) answered = false;
+                TextView operatorView = findViewById(view.getId());
+                String operator = operatorView.getText().toString();
+                if (numberStatus) {
+                    decimalStatus = false;
+                    negativeStatus = false;
+                    numberStatus = false;
+                    currentNumber = new BigDecimal(0);
+                    currentNumberIndex++;
+                    decimalPoints = 0;
+                    inputOperators.add(operatorHashMap.get(operator));
                 } else {
-                    inputOperators.set(inputOperators.size()-1, operatorHashMap.get(operatorText.getText().toString()));
-                    replaceLastChar(operatorText.getText().toString());
+                    inputOperators.set(inputOperators.size() - 1, operatorHashMap.get(operator));
                 }
-                decimalStatus = false;
-                break;
+                updateText();
         }
-    }
-
-    /**
-     * isNumber: Checks if given character is a digit
-     * @param c Character to be checked
-     * @return true if c is a digit, false if it isn't
-     */
-    private boolean isDigit(char c) {
-        return c >= 48 && c <= 57;
     }
 
     /**
      * updateText: Updates text displayed on calculator screen.
-     * @param update String to be added to display
      */
-    private void updateText(String update) {
-        if (answerText.length() > 0) {
-            String answer = answerText.getText().toString();
-            clear();
-            if (update.length() == 0) {
-                calculatorText.setText(answer);
-                inputNumbers.add(new BigDecimal(answer));
-            } else if (isDigit(update.charAt(0))) {
-                calculatorText.setText(update);
-            } else {
-                calculatorText.setText(answer + update);
-                inputNumbers.add(new BigDecimal(answer));
-                inputOperators.add(operatorHashMap.get(update));
-                currentNumberIndex = calculatorText.length();
-            }
-        } else if (calculatorText.getText().equals("0")) {
-            if (update.charAt(0) >= 49 && update.charAt(0) <= 57) {
-                calculatorText.setText(update);
-            } else if (update.charAt(0) != 48) {
-                calculatorText.setText(calculatorText.getText() + update);
-            }
-        } else {
-            calculatorText.setText(calculatorText.getText() + update);
+    private void updateText() {
+        StringBuilder updatedText = new StringBuilder();
+        updatedText.append(inputNumbers.get(0));
+        for (int i = 0; i < inputOperators.size(); i++) {
+            updatedText.append(reverseOperatorHashMap.get(inputOperators.get(i)));
+            if (inputNumbers.size() > i + 1) updatedText.append(inputNumbers.get(i + 1));
         }
-    }
-
-    /**
-     * replaceLastChar: Replaces the last character in the calculator TextView.
-     * @param update the character to use as a replacement.
-     */
-    private void replaceLastChar(String update) {
-        calculatorText.setText(calculatorText.getText().subSequence(0, calculatorText.length()-1) + update);
+        calculatorText.setText(String.valueOf(updatedText));
+        if (answered) {
+            answerText.setText(String.valueOf(answer));
+        } else {
+            answerText.setText("");
+        }
     }
 
     /**
@@ -199,7 +197,6 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
      *            Displays result of calculations to screen.
      */
     private void calculate() {
-        BigDecimal answer;
         answer = inputNumbers.get(0);
         for (int i = 0; i < inputOperators.size(); i++) {
             switch (inputOperators.get(i)) {
@@ -218,38 +215,29 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 case MODULUS:
                     answer = answer.remainder(inputNumbers.get(i+ 1));
                     break;
-                default:
-                    throw new RuntimeException();
             }
         }
-        answerText.setText(String.valueOf(answer));
-        decimalStatus = false;
+        answered = true;
     }
 
     /**
      * clear: Clears any calculations and results currently displayed to the screen.
      */
     private void clear() {
-        calculatorText.setText("0");
-        answerText.setText("");
+        currentNumber = new BigDecimal(0);
+        currentNumberIndex = 0;
+        decimalPoints = 0;
+        answer = null;
 
         inputNumbers.clear();
         inputOperators.clear();
 
-        currentNumberIndex = 0;
-        decimalStatus = false;
-    }
+        inputNumbers.add(currentNumber);
 
-    /**
-     * addLastNumber: Takes the last number from the input TextView and adds it to inputNumbers
-     */
-    private void addLastNumber() {
-        inputNumbers.add(new BigDecimal(calculatorText.getText().subSequence(currentNumberIndex, calculatorText.length()).toString()));
-        if (calculatorText.getText().charAt(calculatorText.length()-1) == 46) {
-            currentNumberIndex = calculatorText.length();
-        } else {
-            currentNumberIndex = calculatorText.length() + 1;
-        }
+        answered = false;
+        decimalStatus = false;
+        negativeStatus = false;
+        numberStatus = true;
     }
 
     /**
