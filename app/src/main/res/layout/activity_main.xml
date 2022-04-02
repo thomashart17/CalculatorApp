@@ -22,7 +22,7 @@
             android:layout_margin="5dp"
             android:gravity="top|end"
             android:textAlignment="gravity"
-            android:textSize="25pt" />
+            android:textSize="20pt" />
     </FrameLayout>
 
     <FrameLayout
@@ -37,7 +37,7 @@
             android:layout_margin="5dp"
             android:gravity="bottom|end"
             android:textAlignment="gravity"
-            android:textSize="25pt" />
+            android:textSize="20pt" />
     </FrameLayout>
 
     <LinearLayout

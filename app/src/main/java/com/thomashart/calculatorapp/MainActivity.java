@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -186,7 +187,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
         }
         calculatorText.setText(String.valueOf(updatedText));
         if (answered) {
-            answerText.setText(String.valueOf(answer));
+            answerText.setText(answer.toString());
         } else {
             answerText.setText("");
         }
@@ -210,7 +211,7 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                     answer = answer.multiply(inputNumbers.get(i + 1));
                     break;
                 case DIVIDE:
-                    answer = answer.divide(inputNumbers.get(i + 1));
+                    answer = answer.divide(inputNumbers.get(i + 1), 100, RoundingMode.HALF_EVEN);
                     break;
                 case MODULUS:
                     answer = answer.remainder(inputNumbers.get(i+ 1));
@@ -218,6 +219,8 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
             }
         }
         answered = true;
+        int scale = 10 - answer.precision() + answer.scale();
+        answer = answer.setScale(scale, RoundingMode.HALF_EVEN).stripTrailingZeros();
     }
 
     /**
