@@ -139,13 +139,17 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
                 break;
             case R.id.equals_button:
                 if (inputNumbers.size() > inputOperators.size()) {
-                    calculate();
-                    BigDecimal tempAnswer = answer;
-                    updateText();
-                    clear();
-                    answer = tempAnswer;
-                    answered = true;
-                    inputNumbers.set(currentNumberIndex, answer);
+                    try {
+                        calculate();
+                        BigDecimal tempAnswer = answer;
+                        updateText();
+                        clear();
+                        answer = tempAnswer;
+                        answered = true;
+                        inputNumbers.set(currentNumberIndex, answer);
+                    } catch (ArithmeticException e) {
+                        invalidSyntax();
+                    }
                 } else {
                     invalidSyntax();
                 }
@@ -219,8 +223,10 @@ public class MainActivity extends Activity implements OnCalculatorClickListener 
             }
         }
         answered = true;
-        int scale = 10 - answer.precision() + answer.scale();
-        answer = answer.setScale(scale, RoundingMode.HALF_EVEN).stripTrailingZeros();
+        if (answer.toString().replace(".", "").length() > 10) {
+            int scale = 10 - answer.precision() + answer.scale();
+            answer = answer.setScale(scale, RoundingMode.HALF_EVEN).stripTrailingZeros();
+        }
     }
 
     /**
